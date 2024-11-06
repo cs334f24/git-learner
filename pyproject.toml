@@ -1,0 +1,9 @@
+[project]
+name = "git-learner"
+version = "0.1.0"
+description = "A system for learning git related workflows"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "flask>=3.0.3",
+]
