@@ -1,0 +1,21 @@
+body {
+    margin: 2vh 3vw;
+}
+
+
+main {
+    display: flex;
+    flex-direction: column;
+    animation-name: fadein;
+    animation-duration: 500ms;
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
