@@ -7,7 +7,7 @@
         <dd>Total Steps</dd>
         <dt>{{ module['total_steps'] }}</dt>
         <dd>Link</dd>
-        {% set url = url_for('modules.module_home', module_id=module['id']) %}
+        {% set url = url_for('modules.module_page', module_id=module['id']) %}
         <dt><a href="{{ url }}">{{ url }}</a></dt>
         <dd>Current Spot</dd>
         <dt><a href="{{ url }}/step/{{ module['step'] }}">Step {{ module['step'] }}</a></dt>

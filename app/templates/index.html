@@ -20,11 +20,7 @@ Git Learner Home
     <p>Welcome to the git-learner system</p>
     <h2>Modules</h2>
     <section>
-        <ul>
-        {% for module in modules %}
-        {% include "module_card.html" %}
-        {% endfor %}
-        </ul>
+        <a href="{{ url_for('modules.modules_home') }}"><button>Modules</button></a>
     </section>
 </main>
 {% endblock content %}

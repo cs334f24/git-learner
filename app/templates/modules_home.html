@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}
+Git Learner modules
+{% endblock %}
+
+{% block content %}
+<h1>Modules</h1>
+<main>
+    <ul>
+        {% for module in modules %}
+        {% include "module_card.html" %}
+        {% endfor %}
+    </ul>
+</main>
+{% endblock %}

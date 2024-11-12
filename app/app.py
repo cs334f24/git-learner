@@ -43,19 +43,13 @@ def create_app() -> Flask:
     @app.route("/")
     def index():
         user = session.get("user")
-        modules = [
-            {"id": i, "name": f"Module {i+1}", "step": 2 * i, "total_steps": 3 * i + 1}
-            for i in range(5)
-        ]
         if user:
             return render_template(
                 "index.html",
-                title="Git Learner",
                 signed_in=True,
                 user=user,
-                modules=modules,
             )
-        return render_template("index.html", title="Git Learner", signed_in=False)
+        return render_template("index.html", signed_in=False)
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(modules_bp)
