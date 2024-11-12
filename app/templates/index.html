@@ -1,21 +1,18 @@
-<!DOCTYPE HTML>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Git Learner</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-
-<body>
-    <header>
-        <h1>Git Learner</h1>
-    </header>
-    <div>
-        <button>Login</button>
-    </div>
-    <main>
-        <p>Welcome to the git-learner system</p>
-    </main>
-</body>
-
-</html>
+{% block content %}
+<header>
+    <h1>Git Learner</h1>
+</header>
+<div>
+    {% if signed_in %}
+    {% include "user.html" %}
+    <a href="{{ url_for('logout') }}"><button>Logout</button></a>
+    {% else %}
+    <a href="{{ url_for('login') }}"><button>Login</button></a>
+    {% endif %}
+</div>
+<main>
+    <p>Welcome to the git-learner system</p>
+</main>
+{% endblock content %}

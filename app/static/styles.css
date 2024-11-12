@@ -10,6 +10,14 @@ main {
     animation-duration: 500ms;
 }
 
+.user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: fit-content;
+    border: 2px solid black;
+}
+
 @keyframes fadein {
     from {
         opacity: 0;
