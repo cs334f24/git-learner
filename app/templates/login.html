@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}
+Login Page
+{% endblock %}
+
+{% block content %}
+<header>
+    <h1>Git Learner Login</h1>
+</header>
+<main>
+    <a href="{{ url_for('auth.login') }}"><button>Login via GitHub</button></a>
+</main>
+{% endblock %}

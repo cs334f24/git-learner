@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block title %}
+Git Learner Home
+{% endblock %}
+
 {% block content %}
 <header>
     <h1>Git Learner</h1>
@@ -7,12 +11,20 @@
 <div>
     {% if signed_in %}
     {% include "user.html" %}
-    <a href="{{ url_for('logout') }}"><button>Logout</button></a>
+    <a href="{{ url_for('auth.logout') }}"><button>Logout</button></a>
     {% else %}
-    <a href="{{ url_for('login') }}"><button>Login</button></a>
+    <a href="{{ url_for('auth.login_page') }}"><button>Login</button></a>
     {% endif %}
 </div>
 <main>
     <p>Welcome to the git-learner system</p>
+    <h2>Modules</h2>
+    <section>
+        <ul>
+        {% for module in modules %}
+        {% include "module_card.html" %}
+        {% endfor %}
+        </ul>
+    </section>
 </main>
 {% endblock content %}

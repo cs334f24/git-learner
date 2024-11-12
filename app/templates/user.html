@@ -1,10 +1,10 @@
 <div class="user">
-    <img src="{{ avatar_url }}" />
+    <img src="{{ user['avatar_url'] }}" />
     <dl>
         <dt>Name</dt>
-        <dd>{{ name }}</dd>
+        <dd>{{ user['name'] }}</dd>
         <dt>Login</dt>
-        <dd>{{ login }}</dd>
+        <dd>{{ user['login'] }}</dd>
     </dl>
-    <a href="{{ github_url }}">Profile</a>
+    <a href="{{ user['html_url'] }}">Profile</a>
 </div>

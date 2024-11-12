@@ -2,7 +2,12 @@ import os
 
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
-from flask import Flask, redirect, render_template, session, url_for
+from flask import Flask, render_template, session
+
+from .auth import bp as auth_bp
+from .modules import bp as modules_bp
+
+oauth = OAuth()
 
 
 def create_app() -> Flask:
@@ -16,9 +21,11 @@ def create_app() -> Flask:
         GITHUB_CLIENT_SECRET=os.getenv("GITHUB_CLIENT_SECRET"),
     )
 
-    oauth = OAuth(app)
+    oauth.init_app(app)
 
-    github = oauth.register(
+    # oauth = OAuth(app)
+
+    github_oauth = oauth.register(
         name="github",
         client_id=app.config["GITHUB_CLIENT_ID"],
         client_secret=app.config["GITHUB_CLIENT_SECRET"],
@@ -29,43 +36,28 @@ def create_app() -> Flask:
         client_kwargs={"scope": "user:email"},
         api_base_url="https://api.github.com/",
     )
-    assert github
+    assert github_oauth
+
+    app.config["GITHUB_OAUTH"] = github_oauth
 
     @app.route("/")
     def index():
         user = session.get("user")
+        modules = [
+            {"id": i, "name": f"Module {i+1}", "step": 2 * i, "total_steps": 3 * i + 1}
+            for i in range(5)
+        ]
         if user:
-            user_data = {
-                "name": user["name"],
-                "login": user["login"],
-                "avatar_url": user["avatar_url"],
-                "github_url": user["html_url"],
-            }
             return render_template(
-                "index.html", title="Git Learner", signed_in=True, **user_data
+                "index.html",
+                title="Git Learner",
+                signed_in=True,
+                user=user,
+                modules=modules,
             )
         return render_template("index.html", title="Git Learner", signed_in=False)
 
-    @app.route("/auth/login")
-    def login():
-        redirect_uri = url_for("authorize", _external=True)
-        return github.authorize_redirect(redirect_uri)
-        # return github.authorize_redirect(redirect_uri)
-
-    @app.route("/auth/callback")
-    def authorize():
-        token = github.authorize_access_token()
-        user = github.get("user").json()
-        session["user"] = user
-        return redirect(url_for("index"))
-
-    @app.route("/logout")
-    def logout():
-        session.pop("user", None)
-        return redirect(url_for("index"))
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(modules_bp)
 
     return app
-
-
-if __name__ == "__main__":
-    create_app().run(port=8080, debug=True)

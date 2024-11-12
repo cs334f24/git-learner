@@ -3,7 +3,7 @@
 all: test
 
 server:
-	uv run app/app.py
+	uv run server.py
 
 test:
 	@uv run pytest
