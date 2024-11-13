@@ -1,20 +1,20 @@
 import pytest
 
-from db import DBMan
+from db import DBManager
 
 
 @pytest.fixture
-def db() -> DBMan:
-    return DBMan(":memory:")
+def db() -> DBManager:
+    return DBManager(":memory:")
 
 
-def test_add_user(db: DBMan):
+def test_add_user(db: DBManager):
     pass
 
 
-def test_create_session(db: DBMan):
+def test_create_session(db: DBManager):
     pass
 
 
-def test_get_progress(db: DBMan):
+def test_get_progress(db: DBManager):
     pass

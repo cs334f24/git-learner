@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ module['name'] }}
+{% endblock %}
+
+{% block content %}
+<h1>{{ module['name'] }}</h1>
+<p>Total Steps: {{ module['total_steps'] }}</p>
+
+{% if session %}
+<progress value="{{ session['current_step'] }}" max="{{ module['total_steps'] }}"></progress>
+<label>
+Repo Url
+<input type="text" id="repoUrl" value="{{ session['repo'] }}" readonly>
+</label>
+<a href="{{ url_for('modules.module_step', module_name= module['name'], module_step=session['current_step']) }}"><button>Resume</button></a>
+{% else %}
+<a href=""><button>Start Session</button></a>
+{% endif %}
+{% endblock %}
