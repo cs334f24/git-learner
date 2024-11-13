@@ -3,6 +3,7 @@ from flask import Blueprint, current_app, redirect, render_template, session, ur
 from db.create import DBManager
 from modules.create_repo import get_github, test_module
 
+
 from .auth import login_required
 
 bp = Blueprint("modules", __name__)
@@ -76,6 +77,7 @@ def module_step(module_name: str, module_step: int):
             m.next()
         new_step = min(m.step_done + 1, len(m.steps) - 1) if m.step_done else m.step
         db.update_session(m.data["repo_name"], gh_user, new_step)
+
     else:
         return f"Module {module_name} is not implemented yet"
 

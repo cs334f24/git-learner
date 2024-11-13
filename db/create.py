@@ -64,6 +64,7 @@ class DBManager:
         if result:
             return result["id"]
 
+
     def add_user(self, name: str, email: str, github: str):
         with self.conn:
             cur = self.conn.cursor()
@@ -146,3 +147,4 @@ class DBManager:
         finally:
             cur.close()
         return True
+
