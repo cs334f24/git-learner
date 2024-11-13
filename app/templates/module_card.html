@@ -2,14 +2,10 @@
     <dl>
         <dd>Name</dd>
         <dt>{{ module['name'] }}</dt>
-        <dd>Current Step</dd>
-        <dt>{{ module['step'] }}</dt>
         <dd>Total Steps</dd>
         <dt>{{ module['total_steps'] }}</dt>
         <dd>Link</dd>
-        {% set url = url_for('modules.module_page', module_id=module['id']) %}
+        {% set url = url_for('modules.module_page', module_name=module['name']) %}
         <dt><a href="{{ url }}">{{ url }}</a></dt>
-        <dd>Current Spot</dd>
-        <dt><a href="{{ url }}/step/{{ module['step'] }}">Step {{ module['step'] }}</a></dt>
     </dl>
 </li>

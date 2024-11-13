@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}
+{{ module['name'] }}: {{ module_step }}
+{% endblock %}
+
+{% block content %}
+<h1>{{ module['name'] }}: {{ module_step }} / {{ module['total_steps'] }}</h1>
+
+
+<nav>
+    {% if module_step + 1 <= module['total_steps'] %}
+    <a href="{{ url_for('modules.module_step', module_name = module['name'], module_step=module_step + 1) }}"><button>Next</button></a>
+    {% else %}
+    <a href="{{ url_for('modules.module_step', module_name = module['name'], module_step=0) }}"><button>Restart</button></a>
+    {% endif %}
+</nav>
+{% endblock %}

@@ -1,3 +1,3 @@
-from .create import DBMan
+from .create import DBManager
 
-__all__ = ["DBMan"]
+__all__ = ["DBManager"]

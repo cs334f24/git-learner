@@ -4,6 +4,8 @@ from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from flask import Flask, render_template, session
 
+from db.create import DBManager
+
 from .auth import bp as auth_bp
 from .modules import bp as modules_bp
 
@@ -19,7 +21,13 @@ def create_app() -> Flask:
     app.config.from_mapping(
         GITHUB_CLIENT_ID=os.getenv("GITHUB_CLIENT_ID"),
         GITHUB_CLIENT_SECRET=os.getenv("GITHUB_CLIENT_SECRET"),
+        DB_FILE="data.sqlite3",
+        GITHUB_APP_ID=int(os.environ["GITHUB_APP_ID"]),
+        GITHUB_ORGANIZATION=os.getenv("GITHUB_ORGANIZATION"),
     )
+
+    with open(os.environ["GITHUB_PRIVATE_KEY_PATH"]) as f:
+        app.config["GITHUB_PRIVATE_KEY"] = f.read()
 
     oauth.init_app(app)
 
