@@ -32,6 +32,7 @@ def login():
 @bp.route("/auth/callback")
 def authorize():
     oauth = current_app.config["GITHUB_OAUTH"]
+    token = oauth.authorize_access_token() 
     user = oauth.get("user").json()
     session["user"] = user
     return redirect(url_for("index"))
