@@ -1,7 +1,7 @@
 body {
     margin: 2vh 3vw;
+    background-color: rgb(218, 244, 252);
 }
-
 
 main {
     display: flex;
@@ -18,11 +18,29 @@ main {
     border: 2px solid black;
 }
 
+header h1,
+header p.subtitle {
+    text-align: center;
+}
+
+.rounded-box {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px auto;
+    width: 60%;
+    text-align: center;
+}
+
+.login-button {
+    display: block;
+    margin: 20px auto;
+}
+
 @keyframes fadein {
     from {
         opacity: 0;
     }
-
     to {
         opacity: 1;
     }
