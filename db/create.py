@@ -40,6 +40,31 @@ class DBManager:
         """)
         cur.close()
 
+    def _github_to_id(self, github_user: str) -> int | None:
+        cur = self.conn.cursor()
+        cur.execute(
+            """SELECT id
+                    FROM users
+                    WHERE github = ?""",
+            (github_user,),
+        )
+        result = cur.fetchone()
+        if result:
+            return result["id"]
+
+    def _module_name_to_id(self, module_name: str) -> int | None:
+        cur = self.conn.cursor()
+        cur.execute(
+            """SELECT id
+                    FROM modules
+                    WHERE name = ?""",
+            (module_name,),
+        )
+        result = cur.fetchone()
+        if result:
+            return result["id"]
+
+
     def add_user(self, name: str, email: str, github: str):
         with self.conn:
             cur = self.conn.cursor()
@@ -51,6 +76,18 @@ class DBManager:
 
     def update_progress(self, user_id: int):
         cur = self.conn.cursor()
+
+    def delete_session(self, github_user: str, module_name: str):
+        user_id = self._github_to_id(github_user)
+        module_id = self._module_name_to_id(module_name)
+        if user_id is not None and module_id is not None:
+            cur = self.conn.cursor()
+            cur.execute(
+                """DELETE FROM sessions
+                    WHERE user_id = ? AND module_id = ?""",
+                (user_id, module_id),
+            )
+            self.conn.commit()
 
     def get_session(self, github_user: str, module_name: str):
         cur = self.conn.cursor()
@@ -69,11 +106,15 @@ class DBManager:
         cur.execute("SELECT id, name, total_steps FROM modules")
         return [{"id": r[0], "name": r[1], "total_steps": r[2]} for r in cur.fetchall()]
 
-    def update_session(self, repo: str, github_user: str):
+    def update_session(self, repo: str, github_user: str, current_step: int):
+        user_id = self._github_to_id(github_user)
+        if user_id is None:
+            return
         cur = self.conn.cursor()
-        cur.execute("SELECT id FROM users WHERE github = ?", (github_user,))
-        user_id = cur.fetchone()["id"]
-        cur.execute("UPDATE sessions SET repo = ? WHERE user_id = ?", (repo, user_id))
+        cur.execute(
+            "UPDATE sessions SET repo = ?, current_step = ? WHERE user_id = ?",
+            (repo, current_step, user_id),
+        )
         self.conn.commit()
 
     def get_module(self, module_name: str):
@@ -84,11 +125,14 @@ class DBManager:
         )
         return cur.fetchone()
 
-    def create_session(self, user_id: int, module_id: int):
+    def create_session(self, github_user: str, module_name: str) -> bool:
+        user_id = self._github_to_id(github_user)
+        module_id = self._module_name_to_id(module_name)
+        if user_id is None or module_id is None:
+            return False
         cur = self.conn.cursor()
         try:
             timestamp = datetime.datetime.now(datetime.UTC).isoformat()
-            # TODO: generate repo
             cur.execute(
                 """
                 INSERT INTO sessions(user_id, module_id, created, current_step)
@@ -99,5 +143,8 @@ class DBManager:
             self.conn.commit()
         except Exception:
             self.conn.rollback()
+            return False
         finally:
             cur.close()
+        return True
+

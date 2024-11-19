@@ -14,8 +14,11 @@
 Repo Url
 <input type="text" id="repoUrl" value="{{ session['repo'] }}" readonly>
 </label>
+{% if session['current_step'] < module['total_steps'] %}
 <a href="{{ url_for('modules.module_step', module_name= module['name'], module_step=session['current_step']) }}"><button>Resume</button></a>
+{% endif %}
+<a href="{{ url_for('modules.new_session', module_name= module['name']) }}"><button>Restart</button></a>
 {% else %}
-<a href=""><button>Start Session</button></a>
+<a href="{{ url_for('modules.new_session', module_name=module['name']) }}"><button>Start Session</button></a>
 {% endif %}
 {% endblock %}

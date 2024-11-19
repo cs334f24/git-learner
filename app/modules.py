@@ -1,8 +1,8 @@
-import github
-from flask import Blueprint, current_app, render_template, session
+from flask import Blueprint, current_app, redirect, render_template, session, url_for
 
 from db.create import DBManager
-from modules.create_repo import test_module, get_github
+from modules.create_repo import get_github, test_module
+
 
 from .auth import login_required
 
@@ -33,6 +33,25 @@ def module_page(module_name: str):
 
 
 @login_required
+@bp.get("/modules/<module_name>/new")
+def new_session(module_name: str):
+    db = DBManager(current_app.config["DB_FILE"])
+    module = db.get_module(module_name)
+    if not module:
+        return f"Module {module_name} does not exist!", 404
+
+    gh_user = session["user"]["login"]
+    db.delete_session(gh_user, module_name)
+    session_created = db.create_session(gh_user, module_name)
+    if session_created:
+        return redirect(
+            url_for("modules.module_step", module_name=module_name, module_step=0)
+        )
+
+    return "An error occured while creating a session", 500
+
+
+@login_required
 @bp.get("/modules/<module_name>/step/<int:module_step>")
 def module_step(module_name: str, module_step: int):
     db = DBManager(current_app.config["DB_FILE"])
@@ -54,7 +73,11 @@ def module_step(module_name: str, module_step: int):
         m = factory(github, org_name, module_step, session_["repo"])
 
         m.act()
-        db.update_session(m.data["repo_name"], gh_user)
+        if m.can_continue():
+            m.next()
+        new_step = min(m.step_done + 1, len(m.steps) - 1) if m.step_done else m.step
+        db.update_session(m.data["repo_name"], gh_user, new_step)
+
     else:
         return f"Module {module_name} is not implemented yet"
 
