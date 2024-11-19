@@ -3,7 +3,6 @@ from flask import Blueprint, current_app, redirect, render_template, session, ur
 from db.create import DBManager
 from modules.create_repo import get_github, test_module
 
-
 from .auth import login_required
 
 bp = Blueprint("modules", __name__)
@@ -12,14 +11,15 @@ MODULES = {"test_module": test_module}
 
 
 @bp.route("/modules")
+@login_required
 def modules_home():
     db = DBManager(current_app.config["DB_FILE"])
     modules = db.get_modules()
     return render_template("modules_home.html", modules=modules)
 
 
-@login_required
 @bp.route("/modules/<module_name>")
+@login_required
 def module_page(module_name: str):
     db = DBManager(current_app.config["DB_FILE"])
     module = db.get_module(module_name)
@@ -32,8 +32,8 @@ def module_page(module_name: str):
     return render_template("module.html", module=module, session=session_)
 
 
-@login_required
 @bp.get("/modules/<module_name>/new")
+@login_required
 def new_session(module_name: str):
     db = DBManager(current_app.config["DB_FILE"])
     module = db.get_module(module_name)
@@ -51,8 +51,8 @@ def new_session(module_name: str):
     return "An error occured while creating a session", 500
 
 
-@login_required
 @bp.get("/modules/<module_name>/step/<int:module_step>")
+@login_required
 def module_step(module_name: str, module_step: int):
     db = DBManager(current_app.config["DB_FILE"])
     module = db.get_module(module_name)

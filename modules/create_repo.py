@@ -1,4 +1,3 @@
-
 import wonderwords
 from github import Auth, Github, GithubException, GithubIntegration
 from github.Repository import Repository
@@ -6,7 +5,7 @@ from github.Repository import Repository
 from .defs import GithubStep, Module, StepData
 
 
-def get_github(private_key , app_id: int | str, org_name: str) -> Github:
+def get_github(private_key, app_id: int | str, org_name: str) -> Github:
     """Create an object to interact with the github api as an app
 
     Args:

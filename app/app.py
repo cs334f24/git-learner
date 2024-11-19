@@ -4,8 +4,6 @@ from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from flask import Flask, render_template, session
 
-from db.create import DBManager
-
 from .auth import bp as auth_bp
 from .modules import bp as modules_bp
 
