@@ -8,8 +8,9 @@ bp = Blueprint("auth", __name__)
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if "user" not in session:
+        if session.get("user") is None:
             return redirect(url_for("auth.login"))
+        return f(*args, **kwargs)
 
     return decorated_function
 
