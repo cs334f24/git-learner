@@ -10,12 +10,14 @@
 
 {% if session %}
 <progress value="{{ session['current_step'] }}" max="{{ module['total_steps'] }}"></progress>
+{% if repo_url %}
 <label>
 Repo Url
-<input type="text" id="repoUrl" value="{{ session['repo'] }}" readonly>
+<input type="text" id="repoUrl" value="{{ repo_url }}" readonly>
 </label>
+{% endif %}
 {% if session['current_step'] < module['total_steps'] %}
-<a href="{{ url_for('modules.module_step', module_name= module['name'], module_step=session['current_step']) }}"><button>Resume</button></a>
+<a href="{{ url_for('modules.module_step', module_name= module['name'], module_step=session['current_step'] + 1) }}"><button>Resume</button></a>
 {% endif %}
 <a href="{{ url_for('modules.new_session', module_name= module['name']) }}"><button>Restart</button></a>
 {% else %}

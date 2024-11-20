@@ -1,17 +1,31 @@
 {% extends "base.html" %}
 {% block title %}
-{{ module['name'] }}: {{ module_step }}
+{{ module_info['name'] }}: {{ module_step }}
 {% endblock %}
 
 {% block content %}
-<h1>{{ module['name'] }}: {{ module_step }} / {{ module['total_steps'] }}</h1>
+<h1>{{ module_info['name'] }}: {{ module_step }} / {{ module_info['total_steps'] }}</h1>
 
+{{ step_instructions|safe }}
+
+<footer>
+    <fieldset>
+        <label>
+            Status:
+            <input id="check_status" disabled></input>
+        </label>
+        <textarea id="check_toast" disabled></textarea>
+        {% set check_url = "'" + module_info['name'] + "'" %}
+        <button id="check_button" onclick="check()">Check</button>
+    </fieldset>
+</footer>
+<script src="{{ url_for('static', filename='module_step.js') }}"></script>
 
 <nav>
-    {% if module_step + 1 <= module['total_steps'] %}
-    <a href="{{ url_for('modules.module_step', module_name = module['name'], module_step=module_step + 1) }}"><button>Next</button></a>
+    {% if module_step + 1 <= module_info['total_steps'] %}
+    <a href="{{ url_for('modules.module_step', module_name = module_info['name'], module_step=module_step + 1) }}"><button>Next</button></a>
     {% else %}
-    <a href="{{ url_for('modules.new_session', module_name = module['name']) }}"><button>Restart</button></a>
+    <a href="{{ url_for('modules.new_session', module_name = module_info['name']) }}"><button>Restart</button></a>
     {% endif %}
 </nav>
 {% endblock %}

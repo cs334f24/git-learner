@@ -24,7 +24,7 @@ class Step(ABC):
         pass
 
     @abstractmethod
-    def check(self, repo: Repository) -> CheckResult:
+    def check(self, repo: Repository) -> tuple[CheckResult, str]:
         pass
 
 
@@ -35,7 +35,7 @@ def create_repo(github: Github, org_name: str) -> Repository:
     repo_name = adjective + "-" + noun
 
     org = github.get_organization(org_name)
-    return org.create_repo(f"{org_name}/{repo_name}")
+    return org.create_repo(f"{repo_name}")
 
 
 def create_repo_from_template(github: Github, template: Repository, org_name: str):
@@ -86,7 +86,7 @@ class Session:
         Raises:
             ValueError: current_step is not a valid value (too large or too small
         """
-        if not 0 < current_step < len(module):
+        if not 0 <= current_step < len(module) - 1:
             raise ValueError("Invalid current step")
 
         self.user = user
@@ -112,24 +112,20 @@ class Session:
 
     def next(self):
         step = self.module[self.current_step]
-        check_result = step.check(self.repo)
+        check_result, self.toast = step.check(self.repo)
         match check_result:
             case CheckResult.GOOD:
                 self.current_step += 1
                 step = self.module[self.current_step]
                 step.action(self.repo)
                 self.text = step.instructions(self.repo)
-                self.toast = ""
             case CheckResult.USER_ERROR:
                 # TODO: pass some error message to user
-                self.toast = "you goofed"
                 pass
             case CheckResult.RECOVERABLE:
                 # TODO: use recovery strategy
-                self.toast = "we goofed, and we're fixing it"
                 pass
             case CheckResult.UNRECOVERABLE:
-                self.toast = "we REALLY goofed, and we can't fix it!"
                 raise Exception("Unrecoverable Error Occured!")
 
     def cleanup(self):

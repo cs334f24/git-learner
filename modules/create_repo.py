@@ -1,24 +1,8 @@
 import wonderwords
-from github import Auth, Github, GithubException, GithubIntegration
+from github import Github, GithubException
 from github.Repository import Repository
 
 from .defs import GithubStep, Module, StepData
-
-
-def get_github(private_key, app_id: int | str, org_name: str) -> Github:
-    """Create an object to interact with the github api as an app
-
-    Args:
-        app_id: the github app id
-        org_name: the organization the github act should act as
-
-    Returns:
-        Github Object
-    """
-    auth = Auth.AppAuth(app_id, private_key)
-    gi = GithubIntegration(auth=auth)
-    installation = gi.get_org_installation(org_name)
-    return installation.get_github_for_installation()
 
 
 class CreateRepo(GithubStep):
