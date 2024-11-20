@@ -23,9 +23,9 @@ Git Learner Home
             <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg mt-4">Logout</button>
         </a>
     {% else %}
-        <a href="{{ url_for('auth.login_page') }}">
-            <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg mt-4">Login</button>
-        </a>
+    <a href="{{ url_for('auth.login') }}">
+        <button class="bg-blue-500 hover:bg-blue-600 text-white
+                       font-semibold py-2 px-4 rounded-lg mt-4"><img src="{{ url_for('static', filename="github-mark/github-mark-white.svg") }}" alt="GitHub Logo">Login via GitHub</button></a>
     {% endif %}
 </div>
 <!-- Dividing Line -->
