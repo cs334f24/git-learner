@@ -1,4 +1,4 @@
-from github import Github
+from github import Github, GithubException
 from github.Repository import Repository
 
 from modules import Module, create_repo
@@ -16,16 +16,37 @@ class AddReadme(Step):
 Welcome to git-learner!""",
         )
 
-    def check(self, repo: Repository) -> CheckResult:
-        if repo.get_readme():
-            return CheckResult.GOOD
-        else:
-            return CheckResult.UNRECOVERABLE
+    def check(self, repo: Repository) -> tuple[CheckResult, str]:
+        try:
+            repo.get_readme()
+            return CheckResult.GOOD, ""
+        except GithubException:
+            return CheckResult.UNRECOVERABLE, "Unable to get readme"
 
     def instructions(self, repo: Repository) -> str:
-        return """"Welcome to Git Learner!
+        return """
+## Welcome to Git Learner!
 
-This is an introductory step, meant exclusively for testing"""
+This is an introductory step meant exclusively for testing
+
+* here is
+* a bulleted
+* list
+
+```bash
+mkdir testing
+cd a_code_block
+```
+
+here is some python
+```python
+name = input("What is your name?")
+if name:
+    print(f"Hello {name}!")
+else:
+    print("Hello World!")
+```
+"""
 
 
 class DummyStep(Step):
@@ -35,8 +56,8 @@ class DummyStep(Step):
     def action(self, repo: Repository):
         return
 
-    def check(self, repo: Repository) -> CheckResult:
-        return CheckResult.GOOD
+    def check(self, repo: Repository) -> tuple[CheckResult, str]:
+        return CheckResult.GOOD, ""
 
     def instructions(self, repo: Repository) -> str:
         return f"Instructions: {self.text}"

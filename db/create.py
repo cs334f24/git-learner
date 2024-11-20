@@ -2,6 +2,8 @@ import datetime
 import sqlite3
 from typing import TypedDict
 
+from modules.steps import Session
+
 
 class SessionInfo(TypedDict):
     repo: str
@@ -39,6 +41,19 @@ class SessionsDB:
         if result:
             return result["id"]
 
+    def progress(self, github_user: str, module_name: str) -> dict[str, int] | None:
+        """Get the current progress for a user in a session"""
+        cur = self.conn.cursor()
+        cur.execute(
+            """"SELECT current_step, total_steps
+        FROM sessions
+        JOIN users on sessions.user_id = users.id
+        JOIN modules on sessions.module_id = modules.id
+        WHERE users.github = ? AND modules.name = ?""",
+            (github_user, module_name),
+        )
+        return cur.fetchone()
+
     def delete(self, github_user: str, module_name: str):
         user_id = self._github_to_id(github_user)
         module_id = self._module_name_to_id(module_name)
@@ -70,6 +85,34 @@ class SessionsDB:
             "current_step": result["current_step"],
         }
 
+    def create_from_session(self, session: Session):
+        user_id = self._github_to_id(session.user)
+        module_id = self._module_name_to_id(session.module.name)
+        if user_id is None or module_id is None:
+            return False
+
+        cur = self.conn.cursor()
+        try:
+            timestamp = datetime.datetime.now(datetime.UTC).isoformat()
+            cur.execute(
+                """INSERT INTO sessions(user_id, module_id, repo, created, current_step)
+            VALUES(?, ?, ?, ?, ?)""",
+                (
+                    user_id,
+                    module_id,
+                    session.repo_name,
+                    timestamp,
+                    session.current_step,
+                ),
+            )
+        except Exception:
+            self.conn.rollback()
+            return False
+        finally:
+            cur.close()
+        self.conn.commit()
+        return True
+
     def create(self, github_user: str, module_name: str, repo_name: str):
         user_id = self._github_to_id(github_user)
         module_id = self._module_name_to_id(module_name)
@@ -91,6 +134,8 @@ class SessionsDB:
             return False
         finally:
             cur.close()
+
+        self.conn.commit()
         return True
 
     def update(self, github_user: str, module_name: str, step: int):
@@ -186,6 +231,7 @@ class DBManager:
                 (name, email, github),
             )
             cur.close()
+            self.conn.commit()
 
     @property
     def sessions(self):
