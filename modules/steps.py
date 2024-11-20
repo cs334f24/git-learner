@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from enum import Enum
-from operator import mod
 
 import wonderwords
 from github import Github
@@ -53,15 +52,15 @@ class Module:
     def __init__(
         self,
         name: str,
-        initializer: Callable[[], Repository],
+        initializer: Callable[[Github], Repository],
         steps: list[Step],
     ):
         self.name = name
         self.steps = steps
         self.initializer = initializer
 
-    def create(self) -> Repository:
-        return self.initializer()
+    def create(self, github: Github) -> Repository:
+        return self.initializer(github)
 
     def __len__(self):
         return len(self.steps)
@@ -97,7 +96,7 @@ class Session:
 
         # create repo if no repo_name is passed
         if not repo_name:
-            self.repo = module.create()
+            self.repo = module.create(self.github)
             self.repo_name = self.repo.name
         else:
             self.repo_name = repo_name
