@@ -2,6 +2,8 @@ from functools import wraps
 
 from flask import Blueprint, current_app, redirect, session, url_for
 
+from db import DBManager
+
 bp = Blueprint("auth", __name__)
 
 
@@ -25,9 +27,17 @@ def login():
 @bp.route("/auth/callback")
 def authorize():
     oauth = current_app.config["GITHUB_OAUTH"]
+
     oauth.authorize_access_token()
-    user = oauth.get("user").json()
-    session["user"] = user
+    session["user"] = oauth.get("user").json()
+
+    db = DBManager(current_app.config["DB_FILE"])
+    db.add_user(
+        session["user"]["name"],
+        session["user"]["email"],
+        session["user"]["login"],
+    )
+
     return redirect(url_for("index"))
 
 
