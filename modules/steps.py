@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from enum import Enum
+from operator import mod
 
 import wonderwords
 from github import Github
@@ -28,7 +29,7 @@ class Step(ABC):
         pass
 
 
-def create_repo(github: Github, org_name: str) -> Repository | None:
+def create_repo(github: Github, org_name: str) -> Repository:
     r = wonderwords.RandomWord()
     adjective: str = r.word(include_parts_of_speech=["adjective"])
     noun: str = r.word(include_parts_of_speech=["noun"])
@@ -36,6 +37,16 @@ def create_repo(github: Github, org_name: str) -> Repository | None:
 
     org = github.get_organization(org_name)
     return org.create_repo(f"{org_name}/{repo_name}")
+
+
+def create_repo_from_template(github: Github, template: Repository, org_name: str):
+    r = wonderwords.RandomWord()
+    adjective: str = r.word(include_parts_of_speech=["adjective"])
+    noun: str = r.word(include_parts_of_speech=["noun"])
+    repo_name = adjective + "-" + noun
+
+    org = github.get_organization(org_name)
+    return org.create_repo_from_template(repo_name, template)
 
 
 class Module:
@@ -67,9 +78,9 @@ class Session:
         self,
         github: Github,
         user: str,
-        repo_name: str,
         org_name: str,
         module: Module,
+        repo_name: str | None = None,
         current_step: int = 0,
     ):
         """
@@ -80,13 +91,23 @@ class Session:
             raise ValueError("Invalid current step")
 
         self.user = user
-        self.repo_name = repo_name
         self.current_step = current_step
         self.module = module
         self.github = github
-        self.repo = self.github.get_repo(f"{org_name}/{repo_name}")
 
-    def can_continue(self) -> bool:
+        # create repo if no repo_name is passed
+        if not repo_name:
+            self.repo = module.create()
+            self.repo_name = self.repo.name
+        else:
+            self.repo_name = repo_name
+            self.repo = self.github.get_repo(f"{org_name}/{repo_name}")
+
+    def instructions(self) -> str:
+        """Return the instructions for the current step"""
+        return self.module[self.current_step].instructions(self.repo)
+
+    def check(self) -> bool:
         """Return if the current step passes it's check"""
         return self.module[self.current_step].check(self.repo) == CheckResult.GOOD
 
