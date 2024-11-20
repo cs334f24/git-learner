@@ -50,7 +50,7 @@ class SessionsDB:
             )
             self.conn.commit()
 
-    def get(self, github_user: str, module_name: str) -> SessionInfo:
+    def get(self, github_user: str, module_name: str) -> SessionInfo | None:
         cur = self.conn.cursor()
         cur.execute(
             """SELECT repo, created, current_step
@@ -61,6 +61,9 @@ class SessionsDB:
             (github_user, module_name),
         )
         result = cur.fetchone()
+        if not result:
+            return
+
         return {
             "repo": result["repo"],
             "created": datetime.datetime.fromisoformat(result["created"]),
@@ -105,6 +108,7 @@ class SessionsDB:
 
 class ModulesDB:
     """Helper class to interact with modules in the database"""
+
     def __init__(self, conn: sqlite3.Connection):
         self.conn = conn
 
@@ -118,18 +122,20 @@ class ModulesDB:
         if result:
             return result["id"]
 
-    def get(self, name: str | None = None) -> list[ModuleInfo]:
+    def get(self, name: str | None = None) -> list[ModuleInfo] | ModuleInfo:
         """Get info for a module or all modules if no name is provided"""
         cur = self.conn.cursor()
+
         if name:
             cur.execute(
                 "SELECT name, base_repo, total_steps FROM modules WHERE name = ?",
                 (name,),
             )
+            return cur.fetchone()
+
         else:
             cur.execute("SELECT name, base_repo, total_steps FROM modules")
-
-        return cur.fetchall()
+            return cur.fetchall()
 
 
 class DBManager:
@@ -149,7 +155,7 @@ class DBManager:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
             email TEXT,
-            github TEXT
+            github TEXT UNIQUE NOT NULL
         );
         CREATE TABLE IF NOT EXISTS modules(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -176,7 +182,7 @@ class DBManager:
         with self.conn:
             cur = self.conn.cursor()
             cur.execute(
-                "INSERT INTO users(name, email, github) VALUES(?,?,?)",
+                "INSERT OR IGNORE INTO users(name, email, github) VALUES(?,?,?)",
                 (name, email, github),
             )
             cur.close()
@@ -184,7 +190,7 @@ class DBManager:
     @property
     def sessions(self):
         """Helper class to interact with sessions"""
-        return self.sessions
+        return self._sessions
 
     @property
     def modules(self):
