@@ -110,7 +110,7 @@ class Session:
         """Return if the current step passes it's check"""
         return self.module[self.current_step].check(self.repo) == CheckResult.GOOD
 
-    def next(self):
+    def next(self) -> bool:
         step = self.module[self.current_step]
         check_result, self.toast = step.check(self.repo)
         match check_result:
@@ -119,12 +119,13 @@ class Session:
                 step = self.module[self.current_step]
                 step.action(self.repo)
                 self.text = step.instructions(self.repo)
+                return True
             case CheckResult.USER_ERROR:
                 # TODO: pass some error message to user
-                pass
+                return False
             case CheckResult.RECOVERABLE:
                 # TODO: use recovery strategy
-                pass
+                return False
             case CheckResult.UNRECOVERABLE:
                 raise Exception("Unrecoverable Error Occured!")
 
