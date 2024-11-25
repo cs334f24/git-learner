@@ -1,0 +1,6 @@
+<div class="progress-container">
+    <label for="progress-bar" class="progress-label">
+        Step {{ session_info['current_step'] }} of {{ module['total_steps'] }}
+    </label>
+    <progress id="progress-bar" value="{{ session_info['current_step'] }}" max="{{ module['total_steps'] }}"></progress>
+</div>

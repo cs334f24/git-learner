@@ -16,11 +16,7 @@ Welcome to git-learner!""",
         )
 
     def check(self, repo: Repository) -> tuple[CheckResult, str]:
-        try:
-            repo.get_readme()
-            return CheckResult.GOOD, ""
-        except GithubException:
-            return CheckResult.UNRECOVERABLE, "Unable to get readme"
+        return CheckResult.GOOD, ""
 
     def instructions(self, repo: Repository) -> str:
         return """

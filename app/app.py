@@ -30,6 +30,7 @@ def create_app() -> Flask:
 
     oauth.init_app(app)
     github_client.init_app(app)
+    gitlearner.init_app(app)
 
     github_oauth = oauth.register(
         name="github",

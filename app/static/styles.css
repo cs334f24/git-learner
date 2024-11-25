@@ -45,3 +45,303 @@ header p.subtitle {
         opacity: 1;
     }
 }
+
+
+/* Module Page */
+.repo-url-container {
+    margin: 15px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.repo-url-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.repo-url-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+input#repoUrl {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+input#repoUrl:focus {
+    outline: 2px solid #007bff;
+    background-color: #fff;
+}
+
+.copy-button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.copy-button:hover {
+    background-color: #0056b3;
+}
+
+.action-button {
+    margin: 10px 5px;
+    padding: 10px 15px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+.action-button:hover {
+    background-color: #0056b3;
+}
+
+.action-button:focus {
+    outline: none;
+    box-shadow: 0 0 4px #0056b3;
+}
+
+/* Module step */
+
+/* General sticky footer styling */
+.sticky-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background-color: #f8f9fa;
+    border-top: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Styling for the status container */
+.status-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    flex: 1;
+}
+
+.status-fieldset {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;
+    max-width: 400px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.status-fieldset legend {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0 5px;
+    color: #333;
+}
+
+.status-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.status-input {
+    flex: 1;
+    padding: 8px;
+    font-size: 0.9rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.status-toast {
+    width: 95%;
+    height: 60px;
+    padding: 8px;
+    font-size: 0.9rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    overflow-y: scroll;
+    resize: none;
+}
+
+.check-button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.check-button:hover {
+    background-color: #0056b3;
+}
+
+/* Navigation container */
+.navigation-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.next-button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.next-button:hover {
+    background-color: #0056b3;
+}
+
+/* Navigation container styling */
+.navigation-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap; /* Allows wrapping for smaller screens */
+}
+
+.next-button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.next-button:hover {
+    background-color: #0056b3;
+}
+
+/* Module Cards */
+.module-item {
+    list-style: none;
+    margin: 10px 0;
+}
+
+.module-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.module-link:hover {
+    background-color: #007bff;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.module-details {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.module-detail {
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+}
+
+.module-detail dd {
+    font-weight: bold;
+    margin: 0;
+    color: #555;
+}
+
+.module-detail dt {
+    margin: 5px 0 10px;
+    font-size: 1rem;
+    color: inherit;
+}
+
+/* Progress Bar */
+.progress-container {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.progress-label {
+    display: block;
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+progress {
+    width: 100%;
+    height: 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: #e0e0e0;
+    overflow: hidden;
+}
+
+progress::-webkit-progress-bar {
+    background-color: #e0e0e0;
+    border-radius: 10px;
+}
+
+progress::-webkit-progress-value {
+    background-color: #007bff;
+    border-radius: 10px 0 0 10px;
+    transition: width 0.4s ease;
+}
+
+progress::-moz-progress-bar {
+    background-color: #007bff;
+    border-radius: 10px 0 0 10px;
+    transition: width 0.4s ease;
+}
