@@ -32,7 +32,7 @@
     <div class="navigation-container">
         {% if session_info['current_step'] == module_step %}
         {% if module_step < module_info['total_steps'] %}
-            <button class="next-button" onclick="next('{{ module_info['name'] }}', {{ module_step }})">Next</button>
+        <button class="next-button" onclick="next('{{ url_for('modules.module_step_next', module_name=module_info['name'], module_step=module_step) }}')">Next</button>
         {% else %}
             <a href="{{ url_for('modules.new_session', module_name=module_info['name']) }}">
                 <button class="next-button">Restart</button>
