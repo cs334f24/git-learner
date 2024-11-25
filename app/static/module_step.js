@@ -19,11 +19,10 @@ const check = async () => {
     }
 }
 
-const next = async (module_name, step) => {
+const next = async (next_url) => {
     try {
-        const response = await fetch(`/modules/${module_name}/step/${step}/next`, {
-            method: "POST",
-            credentials: "include"
+        const response = await fetch(next_url, {
+            method: "POST"
         })
         const result = await response.json();
 
