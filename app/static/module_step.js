@@ -32,7 +32,7 @@ const next = async (module_name, step) => {
             return
         }
 
-        checkStatus.value = "Not Implemented"
+        checkStatus.value = result.status
         checkToast.value = result.toast
     }
     catch (error) {
