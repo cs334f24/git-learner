@@ -7,6 +7,9 @@ from github import Github
 from github.Repository import Repository
 
 
+class UnrecoverableRepoStateException(Exception): ...
+
+
 class CheckResult(Enum):
     """The result of a Step's check"""
 
@@ -123,15 +126,20 @@ class Session:
 
     def check(self) -> bool:
         """Return if the current step passes it's check"""
-        return self.module[self.current_step-1].check(self.repo) == CheckResult.GOOD
+        return self.module[self.current_step - 1].check(self.repo) == CheckResult.GOOD
 
     def next(self) -> bool:
-        step = self.module[self.current_step-1]
+        """Check the current step and attempt to perform the next steps action
+
+        Raises:
+            UnrecoverableRepoStateException: the result of the check is unrecoverable
+        """
+        step = self.module[self.current_step - 1]
         check_result, self.toast = step.check(self.repo)
         match check_result:
             case CheckResult.GOOD:
                 self.current_step += 1
-                step = self.module[self.current_step-1]
+                step = self.module[self.current_step - 1]
                 step.action(self.repo)
                 self.text = step.instructions(self.repo)
                 return True
@@ -142,7 +150,9 @@ class Session:
                 # TODO: use recovery strategy
                 return False
             case CheckResult.UNRECOVERABLE:
-                raise Exception("Unrecoverable Error Occured!")
+                raise UnrecoverableRepoStateException(
+                    "Repo is unrecoverable: " + self.toast
+                )
 
     def cleanup(self):
         """Delete the repository associated with this module"""

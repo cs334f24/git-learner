@@ -10,6 +10,7 @@ from flask import (
 
 from db.create import DBManager
 from module_core import CheckResult, Session
+from module_core.steps import UnrecoverableRepoStateException
 from modules import active_modules as ACTIVE_MODULES
 
 from .app import github_client, gitlearner
@@ -190,7 +191,12 @@ def module_step_next(module_name: str, module_step: int):
         session_info["current_step"],
     )
 
-    if session_.next():
+    try:
+        can_continue = session_.next()
+    except UnrecoverableRepoStateException as e:
+        return {"toast": str(e), "status": "Unrecoverable"}
+
+    if can_continue:
         next_step = session_.current_step
         db.sessions.update(gh_user, module_name, next_step)
         return {
@@ -201,7 +207,7 @@ def module_step_next(module_name: str, module_step: int):
             )
         }
 
-    return {"toast": session_.toast}
+    return {"toast": session_.toast, "status": "Recoverable"}
 
 
 @bp.get("/modules/<module_name>/progress")
