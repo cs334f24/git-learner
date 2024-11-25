@@ -1,49 +1,14 @@
 import os
-import time
 
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from flask import Flask, render_template, session
-from github import Auth, Github, GithubIntegration
 
-
-class FlaskGithub:
-    """A Flask extension that manages a GitHub app's acces token"""
-
-    def __init__(self, app: Flask | None = None):
-        self.github = None
-        self.token = None
-        self.token_expires = 0
-        if app:
-            self.init_app(app)
-
-    def init_app(self, app: Flask):
-        app_id = app.config["GITHUB_APP_ID"]
-        self.org_name = app.config["GITHUB_ORGANIZATION"]
-        private_key = app.config["GITHUB_PRIVATE_KEY"]
-
-        self.auth = Auth.AppAuth(app_id, private_key)
-
-        self.refresh_token()
-
-    def refresh_token(self):
-        gi = GithubIntegration(auth=self.auth)
-        installation = gi.get_org_installation(self.org_name)
-        access_token = gi.get_access_token(installation.id)
-        self.token = access_token.token
-        self.token_expires = access_token.expires_at.timestamp()
-
-        self.github = Github(self.token)
-
-    def get_client(self):
-        if time.time() > self.token_expires - 60:
-            self.refresh_token()
-        assert self.github
-        return self.github
-
+from .extensions import FlaskGithub, FlaskGitLearner
 
 oauth = OAuth()
 github_client = FlaskGithub()
+gitlearner = FlaskGitLearner()
 
 
 def create_app() -> Flask:

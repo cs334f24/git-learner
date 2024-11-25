@@ -2,7 +2,7 @@ import datetime
 import sqlite3
 from typing import TypedDict
 
-from modules.steps import Session
+from module_core import Session
 
 
 class SessionInfo(TypedDict):
@@ -181,6 +181,24 @@ class ModulesDB:
         else:
             cur.execute("SELECT name, base_repo, total_steps FROM modules")
             return cur.fetchall()
+
+    def add(self, info: ModuleInfo):
+        if info["total_steps"] < 1:
+            raise ValueError("Invalid Number of Module Steps")
+        cur = self.conn.cursor()
+
+        try:
+            cur.execute(
+                """INSERT INTO modules(name, base_repo, total_steps)
+            VALUES(?,?,?)
+            ON CONFLICT(name) DO UPDATE SET
+              base_repo=excluded.base_repo,
+              total_steps=excluded.total_steps""",
+                (info["name"], info["base_repo"], info["total_steps"]),
+            )
+            self.conn.commit()
+        except Exception:
+            self.conn.rollback()
 
 
 class DBManager:

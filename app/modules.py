@@ -9,15 +9,13 @@ from flask import (
 )
 
 from db.create import DBManager
-from discover import basic
-from modules.steps import CheckResult, Module, Session
+from module_core import CheckResult, Session
+from modules import active_modules as ACTIVE_MODULES
 
 from .app import github_client
 from .auth import login_required
 
 bp = Blueprint("modules", __name__)
-
-MODULES: dict[str, Module] = {"basic module": basic.module}
 
 
 @bp.route("/modules")
@@ -54,13 +52,13 @@ def module_page(module_name: str):
 def new_session(module_name: str):
     db = DBManager(current_app.config["DB_FILE"])
     module_info = db.modules.get(module_name)
-    if not module_info or module_name not in MODULES:
+    if not module_info or module_name not in ACTIVE_MODULES:
         return f"Module {module_name} does not exist!", 404
 
     github = github_client.get_client()
     gh_user = session["user"]["login"]
     org_name = current_app.config["GITHUB_ORGANIZATION"]
-    module = MODULES[module_name]
+    module = ACTIVE_MODULES[module_name]
 
     # delete old session
     session_info = db.sessions.get(gh_user, module_name)
@@ -99,7 +97,7 @@ def module_step_check(module_name: str, module_step: int):
     if not session_info:
         return f"No session found for {gh_user} in {module_name}", 404
 
-    module = MODULES[module_name]
+    module = ACTIVE_MODULES[module_name]
     session_ = Session(
         github_client.get_client(),
         gh_user,
@@ -140,7 +138,7 @@ def module_step(module_name: str, module_step: int):
     session_info = db.sessions.get(gh_user, module_name)
     assert session_info
 
-    module = MODULES[module_name]
+    module = ACTIVE_MODULES[module_name]
 
     session_ = Session(
         github_client.get_client(),

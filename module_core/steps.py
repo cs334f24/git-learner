@@ -8,6 +8,7 @@ from github.Repository import Repository
 
 
 class CheckResult(Enum):
+    """ The result of a Step's check"""
     USER_ERROR = "User Error"
     RECOVERABLE = "recoverable"
     GOOD = "Good"
@@ -29,6 +30,12 @@ class Step(ABC):
 
 
 def create_repo(github: Github, org_name: str) -> Repository:
+    """Create a repository under an organization with a random adjective-noun name
+
+    Params:
+        github: an authenticated Github object to interact with the GitHub API
+        org_name: the organization which the repo should be created under
+    """
     r = wonderwords.RandomWord()
     adjective: str = r.word(include_parts_of_speech=["adjective"])
     noun: str = r.word(include_parts_of_speech=["noun"])
@@ -39,6 +46,13 @@ def create_repo(github: Github, org_name: str) -> Repository:
 
 
 def create_repo_from_template(github: Github, template: Repository, org_name: str):
+    """Copies a template repository into a new repository under an organization
+
+    Params:
+        github: an authenticated Github object to interact with the GitHub API
+        template: a repository object for the reposity to use as a template
+        org_name: the organization which the repo should be created under
+    """
     r = wonderwords.RandomWord()
     adjective: str = r.word(include_parts_of_speech=["adjective"])
     noun: str = r.word(include_parts_of_speech=["noun"])
