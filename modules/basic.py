@@ -1,8 +1,7 @@
 from github import Github, GithubException
 from github.Repository import Repository
 
-from modules import Module, create_repo
-from modules.steps import CheckResult, Step
+from module_core import CheckResult, Module, Step, create_repo
 
 
 class AddReadme(Step):
@@ -38,7 +37,7 @@ mkdir testing
 cd a_code_block
 ```
 
-here is some python
+here is some syntax highlighted python code
 ```python
 name = input("What is your name?")
 if name:

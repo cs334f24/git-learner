@@ -1,4 +1,5 @@
-# from .defs import GithubStep, Module, Step
-from .steps import CheckResult, Module, Session, Step, create_repo
+from .basic import module as basic_module
 
-__all__ = ["Module", "Step", "create_repo", "Session", "CheckResult"]
+active_modules = {"basic module": basic_module}
+
+__all__ = ["basic_module", "active_modules"]
