@@ -3,30 +3,63 @@
 {{ module_info['name'] }}: {{ module_step }}
 {% endblock %}
 
+{% block header %}
+<header>
+    <h1><a href="/">Git Learner:</a> <a href="{{ url_for('modules.module_page', module_name=module_info['name']) }}">{{ module_info['name'] }}</a></h1>
+</header>
+{% endblock %}
+
 {% block content %}
-<h1>{{ module_info['name'] }}: {{ module_step }} / {{ module_info['total_steps'] }}</h1>
 
 {{ step_instructions|safe }}
 
-<footer>
-    <fieldset>
-        <label>
-            Status:
-            <input id="check_status" disabled></input>
-        </label>
-        <textarea id="check_toast" disabled></textarea>
-        {% set check_url = "'" + module_info['name'] + "'" %}
-        <button id="check_button" onclick="check()">Check</button>
-    </fieldset>
-</footer>
-<script src="{{ url_for('static', filename='module_step.js') }}"></script>
 
-<nav>
-    {% if module_step <= module_info['total_steps'] %}
-    <p>{{ url_for('modules.module_step_next', module_name=module_info['name'], module_step=module_step) }}</p>
-    <a href="{{ url_for('modules.module_step', module_name = module_info['name'], module_step=module_step + 1) }}"><button>Next</button></a>
-    {% else %}
-    <a href="{{ url_for('modules.new_session', module_name = module_info['name']) }}"><button>Restart</button></a>
-    {% endif %}
-</nav>
+<footer class="sticky-footer">
+    <div class="status-container">
+        <fieldset class="status-fieldset">
+            <legend>Status</legend>
+            <div class="status-row">
+                <input id="check_status" class="status-input" disabled>
+                <button id="check_button" class="check-button" onclick="check()">Check</button>
+            </div>
+            <textarea id="check_toast" class="status-toast" disabled placeholder="Status message..."></textarea>
+        </fieldset>
+    </div>
+    <div class="repo-url-wrapper">
+        <input type="text" id="repoUrl" value="{{ repo_url }}" readonly>
+        <button id="copyRepoUrl" class="copy-button" onclick="copyRepoUrl()">Copy</button>
+    </div>
+    <div class="navigation-container">
+        {% if session_info['current_step'] == module_step %}
+        {% if module_step < module_info['total_steps'] %}
+            <button class="next-button" onclick="next('{{ module_info['name'] }}', {{ module_step }})">Next</button>
+        {% else %}
+            <a href="{{ url_for('modules.new_session', module_name=module_info['name']) }}">
+                <button class="next-button">Restart</button>
+            </a>
+        {% endif %}
+        {% else %}
+        <a href="{{ url_for('modules.module_step', module_name=module_info['name'], module_step=session_info['current_step']) }}">
+            <button class="next-button">Go to Current Step</button>
+        </a>
+        {% endif %}
+    </div>
+</footer>
+
+<script src="{{ url_for('static', filename='module_step.js') }}"></script>
+<script>
+    function copyRepoUrl() {
+        const repoInput = document.getElementById('repoUrl');
+        repoInput.select();
+        document.execCommand('copy');
+
+        // Provide user feedback
+        const copyButton = document.getElementById('copyRepoUrl');
+        copyButton.textContent = 'Copied!';
+        setTimeout(() => {
+            copyButton.textContent = 'Copy';
+        }, 2000);
+    }
+</script>
+
 {% endblock %}

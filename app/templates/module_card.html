@@ -1,11 +1,15 @@
-<li>
-    <dl>
-        <dd>Name</dd>
-        <dt>{{ module['name'] }}</dt>
-        <dd>Total Steps</dd>
-        <dt>{{ module['total_steps'] }}</dt>
-        <dd>Link</dd>
-        {% set url = url_for('modules.module_page', module_name=module['name']) %}
-        <dt><a href="{{ url }}">{{ url }}</a></dt>
-    </dl>
+<li class="module-item">
+    {% set url = url_for('modules.module_page', module_name=module['name']) %}
+    <a href="{{ url }}" class="module-link">
+        <dl class="module-details">
+            <div class="module-detail">
+                <dd>Name</dd>
+                <dt>{{ module['name'] }}</dt>
+            </div>
+            <div class="module-detail">
+                <dd>Total Steps</dd>
+                <dt>{{ module['total_steps'] }}</dt>
+            </div>
+        </dl>
+    </a>
 </li>

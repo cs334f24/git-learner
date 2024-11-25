@@ -12,14 +12,13 @@ from db.create import DBManager
 from module_core import CheckResult, Session
 from modules import active_modules as ACTIVE_MODULES
 
-from .app import github_client
+from .app import github_client, gitlearner
 from .auth import login_required
 
 bp = Blueprint("modules", __name__)
 
 
 @bp.route("/modules")
-@login_required
 def modules_home():
     db = DBManager(current_app.config["DB_FILE"])
     modules = db.modules.get()
@@ -104,10 +103,10 @@ def module_step_check(module_name: str, module_step: int):
         current_app.config["GITHUB_ORGANIZATION"],
         module,
         session_info["repo"],
-        session_info["current_step"],
+        module_step,
     )
 
-    response: dict[str, int | str] = {"step": module_step - 1}
+    response: dict[str, int | str] = {"step": module_step}
     result, response["message"] = module[module_step - 1].check(session_.repo)
     match result:
         case CheckResult.GOOD:
@@ -153,27 +152,19 @@ def module_step(module_name: str, module_step: int):
         instructions, extensions=["fenced_code", "codehilite"]
     )
 
-    # if factory := MODULES.get(module_name):
-    #     m = factory(github, org_name, module_step, session_["repo"])
-    #
-    #     m.act()
-    #     if m.can_continue():
-    #         m.next()
-    #     new_step = min(m.step_done + 1, len(m.steps) - 1) if m.step_done else m.step
-    #     db.sessions.update(gh_user, module_name, new_step)
-
-    # else:
-    #     return f"Module {module_name} is not implemented yet"
+    org_name = current_app.config["GITHUB_ORGANIZATION"]
 
     return render_template(
         "module_step.html",
         module_info=module_info,
         module_step=module_step,
+        repo_url=f"https://github.com/{org_name}/{session_info['repo']}",
+        session_info=session_info,
         step_instructions=parsed_instructions,
     )
 
 
-@bp.get("/modules/<module_name>/step/<int:module_step>/next")
+@bp.post("/modules/<module_name>/step/<int:module_step>/next")
 @login_required
 def module_step_next(module_name: str, module_step: int):
     db = DBManager(current_app.config["DB_FILE"])
@@ -188,7 +179,7 @@ def module_step_next(module_name: str, module_step: int):
     if not session_info:
         return f"No session for {gh_user} in module {module_name}", 404
 
-    module = MODULES[module_name]
+    module = gitlearner.active_modules[module_name]
 
     session_ = Session(
         github_client.get_client(),
@@ -201,9 +192,12 @@ def module_step_next(module_name: str, module_step: int):
 
     if session_.next():
         next_step = session_.current_step
+        db.sessions.update(gh_user, module_name, next_step)
         return {
             "url": url_for(
-                "modules.module_step", module_name=module_name, module_step=next_step
+                "modules.module_step",
+                module_name=module_name,
+                module_step=next_step,
             )
         }
 

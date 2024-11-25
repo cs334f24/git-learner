@@ -139,6 +139,7 @@ class SessionsDB:
         return True
 
     def update(self, github_user: str, module_name: str, step: int):
+        """Update a user's progress on a module"""
         user_id = self._github_to_id(github_user)
         module_id = self._module_name_to_id(module_name)
         if user_id is None or module_id is None:

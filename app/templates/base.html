@@ -13,8 +13,12 @@
 </head>
 
 <body>
+    {% block header %}
+    <header>
+        <h1><a href="/">Git Learner:</a> {{ title }}</h1>
+    </header>
+    {% endblock header %}
     {% block content %}
-    <h1>{{ title }}</h1>
     {% endblock content %}
 </body>
 

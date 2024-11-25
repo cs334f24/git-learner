@@ -8,7 +8,8 @@ from github.Repository import Repository
 
 
 class CheckResult(Enum):
-    """ The result of a Step's check"""
+    """The result of a Step's check"""
+
     USER_ERROR = "User Error"
     RECOVERABLE = "recoverable"
     GOOD = "Good"
@@ -94,13 +95,13 @@ class Session:
         org_name: str,
         module: Module,
         repo_name: str | None = None,
-        current_step: int = 0,
+        current_step: int = 1,
     ):
         """
         Raises:
             ValueError: current_step is not a valid value (too large or too small
         """
-        if not 0 <= current_step < len(module) - 1:
+        if not 0 < current_step <= len(module):
             raise ValueError("Invalid current step")
 
         self.user = user
@@ -118,19 +119,19 @@ class Session:
 
     def instructions(self) -> str:
         """Return the instructions for the current step"""
-        return self.module[self.current_step].instructions(self.repo)
+        return self.module[self.current_step - 1].instructions(self.repo)
 
     def check(self) -> bool:
         """Return if the current step passes it's check"""
-        return self.module[self.current_step].check(self.repo) == CheckResult.GOOD
+        return self.module[self.current_step-1].check(self.repo) == CheckResult.GOOD
 
     def next(self) -> bool:
-        step = self.module[self.current_step]
+        step = self.module[self.current_step-1]
         check_result, self.toast = step.check(self.repo)
         match check_result:
             case CheckResult.GOOD:
                 self.current_step += 1
-                step = self.module[self.current_step]
+                step = self.module[self.current_step-1]
                 step.action(self.repo)
                 self.text = step.instructions(self.repo)
                 return True
