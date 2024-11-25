@@ -22,7 +22,8 @@
 <script src="{{ url_for('static', filename='module_step.js') }}"></script>
 
 <nav>
-    {% if module_step + 1 <= module_info['total_steps'] %}
+    {% if module_step <= module_info['total_steps'] %}
+    <p>{{ url_for('modules.module_step_next', module_name=module_info['name'], module_step=module_step) }}</p>
     <a href="{{ url_for('modules.module_step', module_name = module_info['name'], module_step=module_step + 1) }}"><button>Next</button></a>
     {% else %}
     <a href="{{ url_for('modules.new_session', module_name = module_info['name']) }}"><button>Restart</button></a>
