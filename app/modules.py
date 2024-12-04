@@ -180,6 +180,13 @@ def module_step_next(module_name: str, module_step: int):
     if not session_info:
         return f"No session for {gh_user} in module {module_name}", 404
 
+    if session_info["current_step"] != module_step:
+        return (
+            f"Currently on step {session_info['current_step']},"
+            + "not {module_step}. Cannot go to next from here",
+            400,
+        )
+
     module = gitlearner.active_modules[module_name]
 
     session_ = Session(
