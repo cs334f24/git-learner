@@ -7,42 +7,47 @@ Git Learner: {{ module['name'] }}
 
 {% block content %}
 
-{% if session_info -%}
-    {% include "module_progress.html" %}
-    {% if repo_url -%}
-    <div class="repo-url-container">
-        <label for="repoUrl" class="repo-url-label">Repo URL</label>
-        <div class="repo-url-wrapper">
-            <input type="text" id="repoUrl" value="{{ repo_url }}" readonly>
-            <button id="copyRepoUrl" class="copy-button" onclick="copyRepoUrl()">Copy</button>
+<div class="container mt-5">
+
+    {% if session_info %}
+        {% include "module_progress.html" %}
+
+        {% if repo_url %}
+        <div class="mb-4">
+            <label for="repoUrl" class="form-label">Repo URL</label>
+            <div class="input-group">
+                <input type="text" id="repoUrl" class="form-control" value="{{ repo_url }}" readonly>
+                <button id="copyRepoUrl" class="btn btn-outline-secondary" onclick="copyRepoUrl()">Copy</button>
+            </div>
         </div>
-    </div>
-    {%- endif %}
-    {% if session_info['current_step'] < module['total_steps'] -%}
-    <a href="{{ url_for('modules.module_step', module_name=module['name'], module_step=session_info['current_step']) }}">
-        <button class="action-button">Resume</button></a>
-    {%- endif %}
-    <a href="{{ url_for('modules.new_session', module_name=module['name']) }}">
-        <button class="action-button">Restart</button>
-    </a>
-{% else -%}
-    <a href="{{ url_for('modules.new_session', module_name=module['name']) }}">
-        <button class="action-button">Start Session</button>
-    </a>
-{% endif %}
+        {% endif %}
+
+        {% if session_info['current_step'] < module['total_steps'] %}
+        <a href="{{ url_for('modules.module_step', module_name=module['name'], module_step=session_info['current_step']) }}" class="btn btn-primary me-2">Resume</a>
+        {% endif %}
+        <a href="{{ url_for('modules.new_session', module_name=module['name']) }}" class="btn btn-secondary">Restart</a>
+
+    {% else %}
+        <a href="{{ url_for('modules.new_session', module_name=module['name']) }}" class="btn btn-success">Start Session</a>
+    {% endif %}
+
+</div>
 
 <script>
     function copyRepoUrl() {
         const repoInput = document.getElementById('repoUrl');
         repoInput.select();
-        document.execCommand('copy');
+        repoInput.setSelectionRange(0, 99999); // For mobile devices
 
-        // Provide user feedback
-        const copyButton = document.getElementById('copyRepoUrl');
-        copyButton.textContent = 'Copied!';
-        setTimeout(() => {
-            copyButton.textContent = 'Copy';
-        }, 2000);
+        navigator.clipboard.writeText(repoInput.value).then(function() {
+            const copyButton = document.getElementById('copyRepoUrl');
+            copyButton.textContent = 'Copied!';
+            setTimeout(() => {
+                copyButton.textContent = 'Copy';
+            }, 2000);
+        }, function(err) {
+            console.error('Could not copy text: ', err);
+        });
     }
 </script>
 
