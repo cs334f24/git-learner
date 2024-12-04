@@ -1,40 +1,46 @@
 {% extends "base.html" %}
 
 {% block header %}
-<header class="bg-blue-100 py-12">
-    <h1 class="text-5xl font-bold text-center">Git Learner</h1>
-    <p class="text-2xl text-center mt-4">Master Git, one commit at a time</p>
+<header class="bg-light py-5">
+    <div class="container text-center">
+        <h1 class="display-4">Git Learner</h1>
+        <p class="lead mt-3">Master Git, one commit at a time</p>
+    </div>
 </header>
 {% endblock %}
 
 {% block content %}
 
-
-<div class="bg-white rounded-lg p-8 mt-8 mx-auto w-3/5 text-center shadow-lg">
-    <p class="text-xl font-semibold">Welcome to the Git Learner System</p>
-    <p class="mt-4">Embark on your journey to Git mastery. Explore our modules and enhance your version control skills.</p>
+<div class="container mt-5">
+    <div class="bg-white rounded p-5 text-center shadow">
+        <p class="h4 font-weight-bold">Welcome to the Git Learner System</p>
+        <p class="mt-4">Embark on your journey to Git mastery. Explore our modules and enhance your version control skills.</p>
+    </div>
 </div>
 
-<div class="text-center mt-8">
+<div class="text-center mt-5">
     {% if signed_in %}
         {% include "user.html" %}
         <a href="{{ url_for('auth.logout') }}">
-            <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg mt-4">Logout</button>
+            <button class="btn btn-primary mt-4">Logout</button>
         </a>
     {% else %}
-    <a href="{{ url_for('auth.login') }}">
-        <button class="bg-blue-500 hover:bg-blue-600 text-white
-                       font-semibold py-2 px-4 rounded-lg mt-4"><img src="{{ url_for('static', filename="github-mark/github-mark-white.svg") }}" alt="GitHub Logo">Login via GitHub</button></a>
+        <a href="{{ url_for('auth.login') }}">
+            <button class="btn btn-dark mt-4">
+                <img src="{{ url_for('static', filename="github-mark/github-mark-white.svg") }}" alt="GitHub Logo" style="height: 20px; margin-right: 8px;">
+                Login via GitHub
+            </button>
+        </a>
     {% endif %}
 </div>
-<!-- Dividing Line -->
-<hr class="border-t-2 border-gray-200 my-8">
 
-<main class="mt-8">
-    <h2 class="text-3xl font-bold text-center">Modules</h2>
-    <section class="mt-6 flex justify-center">
+<hr class="my-5">
+
+<main class="mt-5">
+    <h2 class="text-center font-weight-bold">Modules</h2>
+    <section class="mt-4 text-center">
         <a href="{{ url_for('modules.modules_home') }}">
-            <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg">
+            <button class="btn btn-success">
                 Explore Modules
             </button>
         </a>
