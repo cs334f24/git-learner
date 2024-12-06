@@ -124,10 +124,11 @@ input#repoUrl:focus {
 
 /* General sticky footer styling */
 .sticky-footer {
-    position: fixed;
+    position: sticky;
     bottom: 0px;
     left: 0;
     right: 0;
+    bottom: 0;
     width: 100%;
     height: 10%;
     background-color: #f8f9fa;
