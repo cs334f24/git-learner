@@ -2,14 +2,17 @@
 {% extends "base.html" %}
 
 {% block title %}
-Git Learner modules
+Git Learner Modules
 {% endblock %}
 
 {% block content %}
-<main>
-    <ul>
+<main class="container my-4">
+    <h1 class="text-center mb-4"> Learn Git!</h1>
+    <ul class="list-group">
         {% for module in modules %}
-        {% include "module_card.html" %}
+        <li class="list-group-item">
+            {% include "module_card.html" %}
+        </li>
         {% endfor %}
     </ul>
 </main>
