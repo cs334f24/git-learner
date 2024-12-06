@@ -18,46 +18,49 @@
 
 {% block content %}
 <div class="container">
-    <div class="mb-4">
+    <div class="mb-2">
         <p class="lead">{{ step_instructions|safe }}</p>
     </div>
 
-    <footer class="sticky-footer bg-light py-2 mt-3">
-        <div class="container">
-            <!-- Status Section -->
-            <div class="status-container mb-2">
-                <fieldset class="status-fieldset border p-2 rounded">
-                    <legend class="w-auto px-2">Status</legend>
-                    <div class="status-row d-flex align-items-center gap-2">
-                        <input id="check_status" class="form-control w-50" disabled placeholder="Status">
-                        <button id="check_button" class="btn btn-primary" onclick="check()">Check</button>
+    <footer class="sticky-footer bg-light py-3 mt-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <!-- Left side content -->
+            <div class="left-content d-flex align-items-center">
+                <!-- Status Section -->
+                <div class="status-container mb-3 me-3">
+                    <fieldset class="status-fieldset border p-2 rounded">
+                        <legend class="w-auto px-2">Status</legend>
+                        <div class="status-row d-flex align-items-center gap-2">
+                            <input id="check_status" class="form-control w-50" disabled placeholder="Status">
+                            <button id="check_button" class="btn btn-primary" onclick="check()">Check</button>
+                        </div>
+                        <textarea id="check_toast" class="form-control mt-2" disabled placeholder="Status message..."></textarea>
+                    </fieldset>
+                </div>
+    
+                <!-- Repository URL Section -->
+                <div class="repo-url-wrapper mb-2">
+                    <div class="input-group">
+                        <input type="text" id="repoUrl" class="form-control" value="{{ repo_url }}" readonly>
+                        <button id="copyRepoUrl" class="btn btn-secondary" onclick="copyRepoUrl()">Copy</button>
                     </div>
-                    <textarea id="check_toast" class="form-control mt-2" disabled placeholder="Status message..."></textarea>
-                </fieldset>
-            </div>
-
-            <!-- Repository URL Section -->
-            <div class="repo-url-wrapper mb-2">
-                <div class="input-group">
-                    <input type="text" id="repoUrl" class="form-control" value="{{ repo_url }}" readonly>
-                    <button id="copyRepoUrl" class="btn btn-secondary" onclick="copyRepoUrl()">Copy</button>
                 </div>
             </div>
-
-            <!-- Navigation Section -->
-            <div class="navigation-container text-center">
+    
+            <!-- Right side content (Next button) -->
+            <div class="navigation-container">
                 {% if session_info['current_step'] == module_step %}
-                {% if module_step < module_info['total_steps'] %}
-                <button class="btn btn-success" onclick="next('{{ url_for('modules.module_step_next', module_name=module_info['name'], module_step=module_step) }}')">Next</button>
+                    {% if module_step < module_info['total_steps'] %}
+                        <button class="btn btn-success" onclick="next('{{ url_for('modules.module_step_next', module_name=module_info['name'], module_step=module_step) }}')">Next</button>
+                    {% else %}
+                        <a href="{{ url_for('modules.new_session', module_name=module_info['name']) }}">
+                            <button class="btn btn-warning">Restart</button>
+                        </a>
+                    {% endif %}
                 {% else %}
-                <a href="{{ url_for('modules.new_session', module_name=module_info['name']) }}">
-                    <button class="btn btn-warning">Restart</button>
-                </a>
-                {% endif %}
-                {% else %}
-                <a href="{{ url_for('modules.module_step', module_name=module_info['name'], module_step=session_info['current_step']) }}">
-                    <button class="btn btn-info">Go to Current Step</button>
-                </a>
+                    <a href="{{ url_for('modules.module_step', module_name=module_info['name'], module_step=session_info['current_step']) }}">
+                        <button class="btn btn-info">Go to Current Step</button>
+                    </a>
                 {% endif %}
             </div>
         </div>

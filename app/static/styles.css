@@ -125,16 +125,17 @@ input#repoUrl:focus {
 /* General sticky footer styling */
 .sticky-footer {
     position: fixed;
-    bottom: 0;
+    bottom: 0px;
     left: 0;
     right: 0;
     width: 100%;
+    height: 10%;
     background-color: #f8f9fa;
     border-top: 1px solid #ccc;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 15px;
+    padding: 5px 5px;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     box-sizing: border-box;
@@ -145,14 +146,14 @@ input#repoUrl:focus {
 .status-container {
     display: flex;
     align-items: flex-start;
-    gap: 15px;
+    gap: 3px;
     flex: 1;
 }
 
 .status-fieldset {
     border: 1px solid #ccc;
     border-radius: 8px;
-    padding: 10px;
+    padding: px;
     width: 100%;
     max-width: 400px;
     background-color: #ffffff;
@@ -169,8 +170,8 @@ input#repoUrl:focus {
 .status-row {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 4px;
+    margin-bottom: 6px;
 }
 
 .status-input {
@@ -319,6 +320,7 @@ input#repoUrl:focus {
     color: #555;
     margin-bottom: 5px;
 }
+
 
 progress {
     width: 100%;
