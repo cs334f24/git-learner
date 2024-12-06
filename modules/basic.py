@@ -62,7 +62,7 @@ def initialzier(github: Github):
     return create_repo(github, "cs334f24")
 
 
-steps = []
+steps: list[Step] = []
 
 steps.append(AddReadme())
 steps.extend(DummyStep(f"this step does nothing: {i}") for i in range(5))
