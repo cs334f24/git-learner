@@ -116,6 +116,7 @@ class Session:
         if not repo_name:
             self.repo = module.create(self.github)
             self.repo_name = self.repo.name
+            self.repo.add_to_collaborators(user, "admin")
         else:
             self.repo_name = repo_name
             self.repo = self.github.get_repo(f"{org_name}/{repo_name}")
