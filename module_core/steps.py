@@ -29,7 +29,7 @@ class Step(ABC):
         pass
 
     @abstractmethod
-    def check(self, repo: Repository) -> tuple[CheckResult, str]:
+    def check(self, repo: Repository, user: str) -> tuple[CheckResult, str]:
         pass
 
 
@@ -127,7 +127,10 @@ class Session:
 
     def check(self) -> bool:
         """Return if the current step passes it's check"""
-        return self.module[self.current_step - 1].check(self.repo) == CheckResult.GOOD
+        return (
+            self.module[self.current_step - 1].check(self.repo, self.user)
+            == CheckResult.GOOD
+        )
 
     def next(self) -> bool:
         """Check the current step and attempt to perform the next steps action
@@ -136,7 +139,7 @@ class Session:
             UnrecoverableRepoStateException: the result of the check is unrecoverable
         """
         step = self.module[self.current_step - 1]
-        check_result, self.toast = step.check(self.repo)
+        check_result, self.toast = step.check(self.repo, self.user)
         match check_result:
             case CheckResult.GOOD:
                 self.current_step += 1

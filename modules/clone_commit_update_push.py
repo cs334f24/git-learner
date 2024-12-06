@@ -1,5 +1,5 @@
 import wonderwords
-from github import Github, GithubException
+from github import Github
 from github.Commit import Commit
 from github.Repository import Repository
 
@@ -19,11 +19,11 @@ It is good practice to include a README.md file within your repository.
 ## Contributors
 
 - Contributor1
-                """,
+""",
         )
         repo.create_file("favorite_colors.txt", "Create favorite colors file", "red")
 
-    def check(self, repo: Repository) -> tuple[CheckResult, str]:
+    def check(self, repo: Repository, user: str) -> tuple[CheckResult, str]:
         return CheckResult.GOOD, ""
 
     def instructions(self, repo: Repository) -> str:
@@ -59,26 +59,18 @@ class PushNoConflict(Step):
         self.previous_commit: dict[str, Commit] = {}
 
     def action(self, repo: Repository):
-        # self.previous_commit[repo.name] = repo.get_commits()[0]
-        pass
+        self.previous_commit[repo.name] = repo.get_commits()[0]
 
-    def check(self, repo: Repository):
+    def check(self, repo: Repository, user: str):
         commits = repo.get_commits()
 
         commit: Commit = commits[0]
-
-        if repo.name not in self.previous_commit:
-            try:
-                self.previous_commit[repo.name] = commits[1]
-            except IndexError:
-                self.previous_commit[repo.name] = commits[0]
-
-        has_new_commit = self.previous_commit[repo.name].sha != commit.sha
+        has_new_commit = commit.author.login == user
 
         if not has_new_commit:
             return CheckResult.USER_ERROR, "No new commit pushed"
 
-        return CheckResult.GOOD, str(commit)
+        return CheckResult.GOOD, "All Good"
 
     def instructions(self, repo: Repository) -> str:
         return """
@@ -146,18 +138,11 @@ class PushAfterUpdate(Step):
         repo.create_file("random_words.txt", "Add random words", "\n".join(words))
         self.previous_commit[repo.name] = repo.get_commits()[0]
 
-    def check(self, repo: Repository) -> tuple[CheckResult, str]:
+    def check(self, repo: Repository, user: str) -> tuple[CheckResult, str]:
         commits = repo.get_commits()
 
-        commit = commits[0]
-
-        if repo.name not in self.previous_commit:
-            try:
-                self.previous_commit[repo.name] = commits[1]
-            except IndexError:
-                self.previous_commit[repo.name] = commits[0]
-
-        has_new_commit = self.previous_commit[repo.name].sha != commit.sha
+        commit: Commit = commits[0]
+        has_new_commit = commit.committer.login == user
 
         if not has_new_commit:
             return CheckResult.USER_ERROR, "No new commit pushed"
@@ -212,7 +197,7 @@ class EndStep(Step):
     def action(self, repo: Repository):
         pass
 
-    def check(self, repo: Repository) -> tuple[CheckResult, str]:
+    def check(self, repo: Repository, user: str) -> tuple[CheckResult, str]:
         return CheckResult.GOOD, ""
 
 

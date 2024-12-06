@@ -108,7 +108,7 @@ def module_step_check(module_name: str, module_step: int):
     )
 
     response: dict[str, int | str] = {"step": module_step}
-    result, response["message"] = module[module_step - 1].check(session_.repo)
+    result, response["message"] = module[module_step - 1].check(session_.repo, gh_user)
     match result:
         case CheckResult.GOOD:
             response["status"] = "GOOD"
