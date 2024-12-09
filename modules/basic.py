@@ -15,48 +15,75 @@ class AddReadme(Step):
 Welcome to git-learner!""",
         )
 
-    def check(self, repo: Repository) -> tuple[CheckResult, str]:
+    def check(self, repo: Repository, user: str ) -> tuple[CheckResult, str]:
         return CheckResult.GOOD, ""
 
     def instructions(self, repo: Repository) -> str:
-        return """
+        name = repo.name
+        url = repo.html_url
+
+        return f"""
+
 ## Welcome to Git Learner!
+---
 
-This is an introductory step meant exclusively for testing
+### This module will guide you through the basics of the Git Learner tool.
 
-* here is
-* a bulleted
-* list
+The Git Learner tool is designed to help you learn the basics of git and GitHub by guiding you through a series of steps.
 
-```bash
-mkdir testing
-cd a_code_block
-```
+Our tool is able to interact with the GitHub API to create repositories, push commits, and more! 
+This mean we are able to create a repository for you to work with. like this one 
+```{url}```
 
-here is some syntax highlighted python code
-```python
-name = input("What is your name?")
-if name:
-    print(f"Hello {name}!")
-else:
-    print("Hello World!")
-```
+---
+#### Before you can access the repository, you will need to accept the invitation to join the organization. To do this, follow the steps below:
+* Click on the link above to access the repository.
+* Click on the "Join" button to accept the invitation to join the organization.
+* Once you have accepted the invitation, you will be able to access the repository and complete the steps in this module!
+
+---
+#### You can proceed to the next step once you have accepted the invitation to join the organization. 
+
+"""
+    
+class DummyStep(Step):
+    def instructions(self, repo: Repository) -> str:
+        
+        return """
+## Working with Git Learner
+---
+
+While working in Git Learner, you will encounter certain steps that will not let you proceed until you have correctly completed the task.
+
+For example, this step is a dummy step that does not require any action from you to proceed so if you click the check it will display a "Good" result.
+
+If you were to not complete the task correctly, you would receive a status explaining what you need to do to proceed.
+
+To complete this step, click the Next button below.
+
+
+
+
 """
 
-
-class DummyStep(Step):
-    def __init__(self, text: str):
-        self.text = text
-
     def action(self, repo: Repository):
-        return
+        pass
 
-    def check(self, repo: Repository) -> tuple[CheckResult, str]:
+    def check(self, repo: Repository, user: str) -> tuple[CheckResult, str]:
         return CheckResult.GOOD, ""
 
-    def instructions(self, repo: Repository) -> str:
-        return f"Instructions: {self.text}"
 
+
+
+class EndStep(Step):
+    def instructions(self, repo: Repository) -> str:
+        return "You have completed this module!"
+
+    def action(self, repo: Repository):
+        pass
+
+    def check(self, repo: Repository, user: str) -> tuple[CheckResult, str]:
+        return CheckResult.GOOD, ""
 
 def initialzier(github: Github):
     return create_repo(github, "cs334f24")
@@ -65,7 +92,8 @@ def initialzier(github: Github):
 steps: list[Step] = []
 
 steps.append(AddReadme())
-steps.extend(DummyStep(f"this step does nothing: {i}") for i in range(5))
+steps.append(DummyStep())
+steps.append(EndStep())
 
 
 module = Module("basic module", initialzier, steps)
